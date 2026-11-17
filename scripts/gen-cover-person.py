@@ -56,20 +56,26 @@ elif a.ratio == '16:9':
     img = Image.new('RGB', (W, H), BG); d = ImageDraw.Draw(img)
     img.paste(person.resize((1080, 1080), Image.LANCZOS), (0, 0))
     d.rectangle([1080, 0, 1086, H], fill=GOLD)
-    tx = 1140
-    if t1: d.text((tx, 250), t1, font=f(110), fill=(255,255,255))
-    if t2: d.text((tx, 390), t2, font=f(110), fill=GOLD)
-    if sub: d.text((tx, 540), sub, font=f(46, 3), fill=GRAY)
+    tx = 1140; avail = W - tx - 60
+    def fit(t, sz, mn=56):
+        while sz > mn and d.textlength(t, font=f(sz)) > avail: sz -= 2
+        return f(sz)
+    if t1: d.text((tx, 250), t1, font=fit(t1, 110), fill=(255,255,255))
+    if t2: d.text((tx, 390), t2, font=fit(t2, 110), fill=GOLD)
+    if sub: d.text((tx, 540), sub, font=fit(sub, 46, 30), fill=GRAY)
     d.text((tx, H-80), a.by, font=f(36, 3), fill=(138,147,166))
 else:  # 4:3
     W, H = 1440, 1080
     img = Image.new('RGB', (W, H), BG); d = ImageDraw.Draw(img)
     img.paste(person.resize((810, 810), Image.LANCZOS), (0, 135))
     d.rectangle([810, 0, 815, H], fill=GOLD)
-    tx = 860
-    if t1: d.text((tx, 230), t1, font=f(92), fill=(255,255,255))
-    if t2: d.text((tx, 350), t2, font=f(92), fill=GOLD)
-    if sub: d.text((tx, 480), sub, font=f(40, 3), fill=GRAY)
+    tx = 860; avail = W - tx - 40
+    def fit4(t, sz, mn=44):
+        while sz > mn and d.textlength(t, font=f(sz)) > avail: sz -= 2
+        return f(sz)
+    if t1: d.text((tx, 230), t1, font=fit4(t1, 92), fill=(255,255,255))
+    if t2: d.text((tx, 350), t2, font=fit4(t2, 92), fill=GOLD)
+    if sub: d.text((tx, 480), sub, font=fit4(sub, 40, 26), fill=GRAY)
     d.text((tx, H-70), a.by, font=f(32, 3), fill=(138,147,166))
 img.save(a.out, quality=93)
 print(a.out)
