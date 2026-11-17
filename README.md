@@ -76,6 +76,67 @@ python3 scripts/gen-cover-person.py --frame 人物帧.jpg \
 | 视频号 | 登录态常过期；封面弹窗 input 渲染慢，脚本 sleep 不够要兜底 |
 | B站 | 投稿成功但列表收录有延迟，验证逻辑必须加 retries，否则重发造成重复投稿 |
 
+
+## 完整仓库结构
+
+```
+xieyao-video-publish/
+├── SKILL.md                 # 8 步流程操作手册（Agent 读这个）
+├── README.md                # 本文件：安装与架构
+├── scripts/                 # 剪辑侧（Python，无浏览器依赖）
+│   ├── cut-silences.py      # 剪气口：静音+语气词检测 → ffmpeg filter
+│   ├── gen-subtitles-kdb.py # 课代表版式 ASS 字幕（含剪后时间轴校正）
+│   ├── gen-cover-person.py  # 人物版封面，四比例
+│   ├── douyin-finish.js     # 抖音兜底（填表卡死时接管）
+│   ├── channels-finish.js   # 视频号兜底（封面+发表）
+│   └── lib.js               # CDP 连接库
+└── tools/publish/           # 发布侧（Node/Python，需 CDP 浏览器）
+    ├── gen-kdb.py           # ★课代表版式渲染（标题区+人物+要点条）
+    ├── publish-all.js       # 多平台编排（端口分组并行+查重）
+    ├── publish.js           # 抖音
+    ├── publish-channels.js  # 视频号
+    ├── publish-xhs.js       # 小红书
+    ├── publish-bili.js      # B站
+    ├── publish-guard.js     # 门禁：断言/条件等待/超时阻断
+    ├── cover-check.js       # 平台实际缩略图验收
+    ├── cover-lint.js        # 封面字号合规检查
+    ├── cover-horizontal.py  # 横版封面（原帧铺满+大字）
+    ├── cover-kazike.py      # 卡片式封面
+    ├── douyin-cover-replace.js  # 抖音换封面
+    ├── xhs-cover-replace.js     # 小红书换封面
+    ├── compress-for-upload.sh   # 2Mbps 压缩
+    ├── preflight.js         # 上传前预检
+    ├── test-guard.js        # 工具链自测
+    ├── start-cdp.sh / start-task-browser.sh / stop-*.sh  # 浏览器管理
+    ├── inject-file.js / inject-image.js / fill-channels.js  # 注入工具
+    ├── video-badge.py       # 视频类型标识（深度视频）
+    ├── manifest.example.json    # 发布清单模板 ★先用这个
+    └── docs/                # 标题规则、封面规范、坑位清单、自检清单
+```
+
+## 第一次跑通的最短路径
+
+```bash
+cd tools/publish
+npm install                              # 装 ws
+cp manifest.example.json manifest.json   # 填自己的路径
+node preflight.js --manifest manifest.json   # 上传前预检
+node test-guard.js                       # 工具链自测
+node publish-all.js --manifest manifest.json --publish
+```
+
+剪辑侧（无浏览器依赖）：
+
+```bash
+ffmpeg -i 原片.mp4 -vn -ar 16000 -ac 1 audio.wav
+python3 scripts/cut-silences.py audio.wav sub.srt <时长秒> filter.txt cutplan.json
+python3 tools/publish/gen-kdb.py --video master-cut.mp4 --ass 字幕.ass \
+  --title "白字行|金黄行|署名" --points points.json --out 成片.mp4
+```
+
+注意：兜底脚本 `scripts/douyin-finish.js` / `channels-finish.js` 需要 `ws` 依赖。若 skill 目录没有 node_modules，用
+`PUB_LIB=/你的/tools/publish/lib.js node scripts/douyin-finish.js ...` 指向已装依赖的目录。
+
 ## 免责声明
 
 - 本工具通过 CDP 驱动真实浏览器，**可能违反各平台服务条款**（自动化操作）。仅供学习交流，使用风险自负。
