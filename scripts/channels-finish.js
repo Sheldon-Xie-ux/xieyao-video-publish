@@ -3,7 +3,8 @@
  * 前置：视频已注入、描述/短标题已填、封面弹窗未开。
  * 用法: CDP_PORT=9222 CDP_TARGET=channels.weixin node channels-finish.js <封面.jpg>
  */
-const {connect}=require('./lib.js');
+const LIB=process.env.PUB_LIB||require('path').join(__dirname,'lib.js');
+const {connect}=require(LIB);
 const fs=require('fs');
 const sleep=ms=>new Promise(r=>setTimeout(r,ms));
 const COVER=process.argv[2];
