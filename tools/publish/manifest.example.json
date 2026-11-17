@@ -1,0 +1,58 @@
+{
+  "_comment": "复制为 manifest.json 后填自己的路径。一个 manifest 一组平台，端口按本机配置改。",
+  "id": "2026-01-01-demo",
+  "video": "/abs/path/to/视频-发布版.mp4",
+  "platforms": [
+    "douyin",
+    "channels",
+    "xhs",
+    "bili"
+  ],
+  "ports": {
+    "douyin": "9222",
+    "channels": "9222",
+    "xhs": "9334",
+    "bili": "9334"
+  },
+  "titles": {
+    "douyin": "标题带钩子，15字内",
+    "channels": "标题口语化",
+    "xhs": "标题20字内",
+    "bili": "标题信息密度高，可加副题"
+  },
+  "short": "短标题",
+  "desc": "视频描述。\\n\\n换行用 \\n。结尾可带话题 #标签",
+  "tags": "标签1,标签2,标签3",
+  "covers": {
+    "douyin": {
+      "path": "/abs/path/to/封面-3:4.jpg",
+      "ratio": "3:4",
+      "main": 100,
+      "sub": 0
+    },
+    "channels": {
+      "path": "/abs/path/to/封面-3:4.jpg",
+      "ratio": "3:4",
+      "main": 100,
+      "sub": 0
+    },
+    "xhs": {
+      "path": "/abs/path/to/封面-3:4.jpg",
+      "ratio": "3:4",
+      "main": 100,
+      "sub": 0
+    },
+    "bili43": {
+      "path": "/abs/path/to/封面-4:3.jpg",
+      "ratio": "4:3",
+      "main": 100,
+      "sub": 0
+    },
+    "bili169": {
+      "path": "/abs/path/to/封面-16:9.jpg",
+      "ratio": "16:9",
+      "main": 120,
+      "sub": 0
+    }
+  }
+}
