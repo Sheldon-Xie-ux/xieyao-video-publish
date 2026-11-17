@@ -1,4 +1,5 @@
-const {connect}=require('./lib.js');
+const LIB=process.env.PUB_LIB||require('path').join(__dirname,'lib.js');
+const {connect}=require(LIB);
 const fs=require('fs');
 const sleep=ms=>new Promise(r=>setTimeout(r,ms));
 const TITLE=process.argv[2], DESC=process.argv[3], COVER=process.argv[4];
